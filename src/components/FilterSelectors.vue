@@ -1,25 +1,38 @@
 <template>
   <v-select
-    v-model="variant"
-    :items="items"
+    v-model="countryItem"
+    :items="store.countries"
     clearable
     label="Filter by country"
   ></v-select>
 
   <v-select
-    v-model="variant"
-    :items="items"
+    v-model="scoreItem"
+    :items="score"
     clearable
     label="Filter by score"
   ></v-select>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useUsersStore } from "@/store/users";
 
 const store = useUsersStore();
 
-const items = ref(["russia", "usa", "> 20", "< 10"]);
-const variant = ref(["default"]);
+const score = ref(["> 25", "> 50", "> 70"]);
+const countryItem = ref<string | null>(null);
+const scoreItem = ref<string | null>(null);
+
+watch(countryItem, () => {
+  store.isLoading = true;
+  store.changeCountry(countryItem.value);
+});
+
+watch(scoreItem, () => {
+  store.isLoading = true;
+  const preparedNumber =
+    scoreItem.value === null ? null : Number(scoreItem.value.slice(2));
+  store.changeScore(preparedNumber);
+});
 </script>

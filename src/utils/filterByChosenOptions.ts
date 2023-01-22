@@ -6,5 +6,9 @@ export const filterByChosenOptions = (
     return true;
   }
 
+  if (typeof option === "number") {
+    return el > option;
+  }
+
   return el === option;
 };

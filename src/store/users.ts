@@ -13,11 +13,19 @@ export const useUsersStore = defineStore("users", () => {
   const chosenCountry = ref<string | null>(null);
   const chosenScore = ref<number | null>(null);
 
-  const filteredUsers = computed(() =>
-    users.value
+  const countries = computed(() => {
+    return users.value.map((el) => el.country);
+  });
+
+  const filteredUsers = computed(() => {
+    const filtered = users.value
       .filter((el) => filterByChosenOptions(el.country, chosenCountry.value))
-      .filter((el) => filterByChosenOptions(el.score, chosenScore.value))
-  );
+      .filter((el) => filterByChosenOptions(el.score, chosenScore.value));
+
+    isLoading.value = false;
+
+    return filtered;
+  });
 
   function changeCountry(newCountry: string | null) {
     chosenCountry.value = newCountry;
@@ -55,5 +63,7 @@ export const useUsersStore = defineStore("users", () => {
     filteredUsers,
     changeCountry,
     changeScore,
+    countries,
+    isError,
   };
 });

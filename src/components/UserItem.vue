@@ -1,33 +1,60 @@
 <template>
   <v-list-item>
     <template v-slot:prepend>
-      <v-avatar v-if="isExistsImg">
-        <v-img :src="prependAvatar" alt="John" @error="errorHandler" />
-      </v-avatar>
-      <v-avatar color="grey" v-else>
-        <v-icon icon="mdi-account-circle"></v-icon>
-      </v-avatar>
+      <v-tooltip
+        :text="`From ${item.country}`"
+        location="bottom"
+        offset="12"
+        :open-on-hover="false"
+        v-model="isShowTooltip"
+      >
+        <template v-slot:activator="{ props }">
+          <v-avatar
+            v-bind="props"
+            @click="tooltipHandler"
+            color="grey"
+            class="avatar"
+            v-on-click-outside="() => (isShowTooltip = false)"
+          >
+            <v-img
+              v-if="isExistsImg"
+              :src="item.prependAvatar"
+              @error="errorHandler"
+            />
+            <v-icon v-else icon="mdi-account-circle"></v-icon>
+          </v-avatar>
+        </template>
+      </v-tooltip>
     </template>
-    <v-list-item-title v-html="title"></v-list-item-title>
-    <v-list-item-subtitle v-html="subtitle"> </v-list-item-subtitle>
+    <v-list-item-title v-html="item.title"></v-list-item-title>
+    <v-list-item-subtitle v-html="item.subtitle"> </v-list-item-subtitle>
+    <v-list-item-subtitle> Score: {{ item.score }} </v-list-item-subtitle>
   </v-list-item>
 </template>
 
 <script setup lang="ts">
+import { User } from "@/api/types";
 import { ref } from "vue";
+import { vOnClickOutside } from "@vueuse/components";
 
 interface Props {
-  title: string;
-  subtitle: string;
-  prependAvatar?: string;
+  item: User;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  prependAvatar: "",
-});
-const isExistsImg = ref(Boolean(props.prependAvatar));
+const props = defineProps<Props>();
+const isExistsImg = ref(Boolean(props.item.prependAvatar));
+const isShowTooltip = ref(false);
 
 const errorHandler = () => {
   isExistsImg.value = false;
 };
+const tooltipHandler = () => {
+  isShowTooltip.value = !isShowTooltip.value;
+};
 </script>
+
+<style>
+.avatar {
+  cursor: pointer;
+}
+</style>
