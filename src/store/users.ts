@@ -2,7 +2,7 @@ import { fetchUsers } from "@/api/fetch/getUsers";
 import { fetchUsersLocal } from "@/api/fetch/getUsersLocal/fetch";
 import { User } from "@/api/types";
 import { isUsersFull } from "@/guards/isUsersFull";
-import { filterByChosenOptions } from "@/utils";
+import { delay, filterByChosenOptions } from "@/utils";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -12,27 +12,31 @@ export const useUsersStore = defineStore("users", () => {
   const isError = ref(false);
   const chosenCountry = ref<string | null>(null);
   const chosenScore = ref<number | null>(null);
+  const filteredUsers = ref<User[]>([]);
 
   const countries = computed(() => {
     return users.value.map((el) => el.country);
   });
 
-  const filteredUsers = computed(() => {
+  const calculateFilteredUsers = async () => {
+    isLoading.value = true;
     const filtered = users.value
       .filter((el) => filterByChosenOptions(el.country, chosenCountry.value))
       .filter((el) => filterByChosenOptions(el.score, chosenScore.value));
 
+    await delay(200); // for demonstration loader
+    filteredUsers.value = filtered;
     isLoading.value = false;
-
-    return filtered;
-  });
+  };
 
   function changeCountry(newCountry: string | null) {
     chosenCountry.value = newCountry;
+    calculateFilteredUsers();
   }
 
   function changeScore(newScore: number | null) {
     chosenScore.value = newScore;
+    calculateFilteredUsers();
   }
 
   async function updateUsers(url?: string) {
@@ -51,6 +55,7 @@ export const useUsersStore = defineStore("users", () => {
       isLoading.value = false;
     } else {
       const data = await fetchUsersLocal();
+      await delay(300); // for demonstration loader
       users.value = data;
       isLoading.value = false;
     }
@@ -65,5 +70,6 @@ export const useUsersStore = defineStore("users", () => {
     changeScore,
     countries,
     isError,
+    calculateFilteredUsers,
   };
 });

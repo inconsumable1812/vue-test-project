@@ -2,13 +2,18 @@
   <v-list lines="three">
     <v-list-subheader v-if="subheader">{{ subheader }}</v-list-subheader>
     <template v-if="!store.isError">
-      <v-list-subheader v-if="users.length === 0">Empty list</v-list-subheader>
+      <v-card-text
+        v-if="users.length === 0 && !store.isLoading"
+        class="text-h5"
+      >
+        Empty list
+      </v-card-text>
       <template v-for="item in users" :key="item.title">
         <user-item :item="item" />
       </template>
     </template>
     <template v-else>
-      <v-card-text class="text-h4 text-red">Loading error </v-card-text>
+      <v-card-text class="text-h4 text-red">Loading error</v-card-text>
     </template>
   </v-list>
 </template>

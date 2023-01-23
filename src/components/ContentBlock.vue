@@ -27,7 +27,8 @@ import { useUsersStore } from "@/store/users";
 
 const store = useUsersStore();
 
-onMounted(() => {
-  store.updateUsers();
+onMounted(async () => {
+  await store.updateUsers();
+  await store.calculateFilteredUsers();
 });
 </script>

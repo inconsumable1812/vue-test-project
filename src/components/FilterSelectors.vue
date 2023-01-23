@@ -25,12 +25,10 @@ const countryItem = ref<string | null>(null);
 const scoreItem = ref<string | null>(null);
 
 watch(countryItem, () => {
-  store.isLoading = true;
   store.changeCountry(countryItem.value);
 });
 
 watch(scoreItem, () => {
-  store.isLoading = true;
   const preparedNumber =
     scoreItem.value === null ? null : Number(scoreItem.value.slice(2));
   store.changeScore(preparedNumber);
