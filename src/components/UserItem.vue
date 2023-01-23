@@ -14,7 +14,7 @@
             @click="tooltipHandler"
             color="grey"
             class="avatar"
-            v-on-click-outside="() => (isShowTooltip = false)"
+            v-click-outside="() => (isShowTooltip = false)"
           >
             <v-img
               v-if="isExistsImg"
@@ -35,7 +35,6 @@
 <script setup lang="ts">
 import { User } from "@/api/types";
 import { ref } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
 
 interface Props {
   item: User;

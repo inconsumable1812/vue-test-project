@@ -8,9 +8,11 @@
       >
         Empty list
       </v-card-text>
-      <template v-for="item in users" :key="item.title">
-        <user-item :item="item" />
-      </template>
+      <v-slide-y-transition class="py-0" group tag="v-list">
+        <template v-for="item in users" :key="item.title">
+          <user-item :item="item" />
+        </template>
+      </v-slide-y-transition>
     </template>
     <template v-else>
       <v-card-text class="text-h4 text-red">Loading error</v-card-text>
